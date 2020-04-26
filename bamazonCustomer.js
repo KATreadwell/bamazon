@@ -42,20 +42,18 @@ function start() {
             .then(function (answer) {
                 console.log(answer);
                 var chosenItem = "SELECT stock_quantity, price FROM products WHERE id = ?;";
-                connection.query(chosenItem, [answer.product_name, answer.stock_quantity], function (err, res) {
+                connection.query(chosenItem, [answer.id, answer.quantity], function (err, res) {
                     if (err) throw error;
 
-                    console.log(answer.stock_quantity);
-
-                    if (answer.quantity <= answer.stock_quantity) {
+                    else if (answer.quantity <= answer.stock_quantity) {
                         var updateInventory = "UPDATE products SET stock_quantity = stock_quantity - ? WHERE id = ?";
                         connection.query(updateInventory, [chosenItem.stock_quantity], function (err, res) {
                             if (err) throw error;
-                            console.log("Your order for " + chosenItem.product_name + " has been placed!");
+                            console.log("Your order for " + chosenItem.product_name + " has been placed!  Your total is " + (chosenItem.quantity * chosenItem.price) + ".");
                         })
 
                     } else {
-                        console.log("Out of stock!");
+                        console.log("Insufficient quantity!");
                     }
                     start();
                 })

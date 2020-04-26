@@ -44,10 +44,32 @@ function menu() {
 
 
 function allProducts() {
-    var allProducts = "SELECT * FROM products WHERE ?";
+    var allProducts = "SELECT * FROM products";
     connection.query(allProducts, function (err, res) {
         if (err) throw err;
-        console.log("Product ID: " + res[i].id + " | " + "Name: " + res[i].product_name + " | " + "Price: $" + res[i].price + " | " + "IN STOCK: " + res[i].stock_quantity);
+
+        function display() {
+            for (var i = 0; i < res.length; i++) {
+                console.log("Product ID: " + res[i].id + " | " + "Name: " + res[i].product_name + " | " + "Price: $" + res[i].price + " | " + "IN STOCK: " + res[i].stock_quantity);
+            }
+        }
+
+        display();
+
+        inquirer
+            .prompt({
+                type: "list",
+                name: "menuReturn",
+                message: "[Return] to main menu?",
+                choices: ["Return", "Quit"]
+            })
+            .then(function (answer) {
+                if (answer.menuReturn === "Return") {
+                    menu();
+                } else {
+                    connection.end();
+                }
+            })
     })
 };
 
@@ -55,9 +77,31 @@ function lowInventory() {
     var lowInventory = "SELECT * FROM products where stock_quantity < 5";
     connection.query(lowInventory, function (err, res) {
         if (err) throw err;
-        console.log(res)
-    })
-};
+
+        function display() {
+            for (var i = 0; i < res.length; i++) {
+                console.log("Product ID: " + res[i].id + " | " + "Name: " + res[i].product_name + " | " + "Price: $" + res[i].price + " | " + "IN STOCK: " + res[i].stock_quantity)
+            }
+        }
+        display();
+    
+
+    inquirer
+        .prompt({
+            type: "list",
+            name: "menuReturn",
+            message: "[Return] to main menu?",
+            choices: ["Return", "Quit"]
+        })
+        .then(function (answer) {
+            if (answer.menuReturn === "Return") {
+                menu();
+            } else {
+                connection.end();
+            }
+        })
+    });
+}
 
 
 function addProduct() {
