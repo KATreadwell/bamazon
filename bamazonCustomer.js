@@ -15,7 +15,7 @@ connection.connect(function (err) {
 });
 
 function start() {
-    connection.query("SELECT * FROM products", function (err, results) {
+    connection.query("SELECT * FROM products", function (err, res) {
         if (err) throw err;
 
         inquirer
@@ -25,16 +25,20 @@ function start() {
                     name: "productList",
                     choices: function () {
                         var choiceArray = [];
-                        for (var i = 0; i < results.length; i++) {
-                            //how to display price? am i supposed to use id number and do input?
-                            choiceArray.push(results[i].product_name);
+                        for (var i = 0; i < res.length; i++) {
+                            console.log("Product ID: " + res[i].id + " | " + "Name: " + res[i].product_name + " | " + "Price: $" + res[i].price + " | " + "IN STOCK: " + res[i].stock_quantity);
+                            choiceArray.push(res[i].product_name);
                         }
                         return choiceArray;
                     },
+                },
+                {
+                    type: "input",
+                    name: "productChoice",
                     message: "Select product you wish to buy."
                 },
                 {
-                    name: "qty",
+                    name: "quantity",
                     type: "input",
                     message: "What quantity would you like to purchase?"
                 }
@@ -45,12 +49,15 @@ function start() {
                 connection.query(chosenItem, [answer.product_name, answer.stock_quantity], function (err, res) {
                     if (err) throw error;
 
-                    if (parseInt(chosenItem.quantity) <= parseInt(chosenItem.stock_quantity)) {
+                    console.log(res[0].stock_quantity, answer.quantity);
+
+                    if (answer.quantity <= answer.stock_quantity) {
                         var updateInventory = "UPDATE products SET stock_quantity = stock_quantity - ? WHERE id = ?";
-                        connection.query(updateInventory, [parseInt(chosenItem.quantity), chosenItem.productList], function (err, res) {
+                        connection.query(updateInventory, [chosenItem.quantity], function (err, res) {
                                 if (err) throw error;
-                                console.log("Your order for " + res[i].product_name + " has been placed!")
+                                console.log("Your order for " + chosenItem.product_name + " has been placed!");
                             })
+                            
                     } else {
                         console.log("Out of stock!");
                     }
