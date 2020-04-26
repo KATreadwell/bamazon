@@ -49,7 +49,7 @@ function start() {
                         var updateInventory = "UPDATE products SET stock_quantity = stock_quantity - ? WHERE id = ?";
                         connection.query(updateInventory, [chosenItem.stock_quantity], function (err, res) {
                             if (err) throw error;
-                            console.log("Your order for " + chosenItem.product_name + " has been placed!  Your total is " + (chosenItem.quantity * chosenItem.price) + ".");
+                            console.log("Your order for " + chosenItem.product_name + " has been placed!  Your total is " + "can't figure out how to calculate" + ".");
                         })
 
                     } else {

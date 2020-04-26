@@ -84,22 +84,22 @@ function lowInventory() {
             }
         }
         display();
-    
 
-    inquirer
-        .prompt({
-            type: "list",
-            name: "menuReturn",
-            message: "[Return] to main menu?",
-            choices: ["Return", "Quit"]
-        })
-        .then(function (answer) {
-            if (answer.menuReturn === "Return") {
-                menu();
-            } else {
-                connection.end();
-            }
-        })
+
+        inquirer
+            .prompt({
+                type: "list",
+                name: "menuReturn",
+                message: "[Return] to main menu?",
+                choices: ["Return", "Quit"]
+            })
+            .then(function (answer) {
+                if (answer.menuReturn === "Return") {
+                    menu();
+                } else {
+                    connection.end();
+                }
+            })
     });
 }
 
@@ -136,22 +136,21 @@ function addProduct() {
 
                     console.log(answer.stock_quantity);
 
-                    if (answer.quantity <= answer.stock_quantity) {
+                    if (answer.quantity <= chosenItem.stock_quantity) {
                         var updateInventory = "UPDATE products SET stock_quantity = stock_quantity - ? WHERE id = ?";
                         connection.query(updateInventory, [chosenItem.stock_quantity], function (err, res) {
                             if (err) throw error;
-                            console.log("Your order for " + chosenItem.product_name + " has been placed!");
+                            console.log("You've increased inventory for " + chosenItem.product_name + ".");
                         })
 
-                    } else {
-                        console.log("You've increased inventory for " + chosenItem.product_name + ".");
                     }
                     menu();
+
                 })
+
             })
 
     })
-
 };
 
 
