@@ -18,6 +18,8 @@
   },
   "homepage": "https://github.com/KATreadwell/bamazon#readme",
   "dependencies": {
+    "inquirer": "^7.1.0",
+    "mysql": "^2.18.1",
     "prompt": "^1.0.0"
   }
 }
