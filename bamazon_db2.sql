@@ -29,7 +29,10 @@ CREATE TABLE departments(
     department_id INTEGER AUTO_INCREMENT NOT NULL,
     department_name VARCHAR(30),
     oh_cost INTEGER,
-    PRIMARY KEY (id) 
+    PRIMARY KEY (department_id) 
 );
 
+INSERT INTO departments(department_name, oh_cost) VALUES ('jewelry', 10000)
+
 SELECT * FROM products;
+SELECT * FROM departments;

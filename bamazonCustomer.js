@@ -19,8 +19,13 @@ function start() {
         if (err) throw err;
 
         function display() {
-            for (var i = 0; i < res.length; i++) {
-                console.log("Product ID: " + res[i].id + " | " + "Name: " + res[i].product_name + " | " + "Price: $" + res[i].price + " | " + "IN STOCK: " + res[i].stock_quantity);
+            for (var i = 0; 
+                i < res.length; i++) {
+                    var formattedPrice = res[i].price.toString();
+                    // console.log(typeof res[i].price);
+                    // console.log("formatted price: " + formattedPrice);
+                    formattedPrice = formattedPrice.slice(0, formattedPrice.length - 2) + "." + formattedPrice.slice(formattedPrice.length - 2);
+                console.log("Product ID: " + res[i].id + " | " + "Name: " + res[i].product_name + " | " + "Price: $" + formattedPrice + " | " + "IN STOCK: " + res[i].stock_quantity);
             }
         }
 
@@ -29,27 +34,28 @@ function start() {
         inquirer
             .prompt([
                 {
-                    type: "input",
+                    type: "number",
                     name: "productChoice",
                     message: "Type ID of product you wish to buy."
                 },
                 {
                     name: "quantity",
-                    type: "input",
+                    type: "number",
                     message: "What quantity would you like to purchase?"
                 }
             ])
             .then(function (answer) {
                 console.log(answer);
-                var chosenItem = "SELECT stock_quantity, price FROM products WHERE id = ?;";
-                connection.query(chosenItem, [answer.id, answer.quantity], function (err, res) {
-                    if (err) throw error;
-
-                    else if (answer.quantity <= answer.stock_quantity) {
-                        var updateInventory = "UPDATE products SET stock_quantity = stock_quantity - ? WHERE id = ?";
-                        connection.query(updateInventory, [chosenItem.stock_quantity], function (err, res) {
-                            if (err) throw error;
-                            console.log("Your order for " + chosenItem.product_name + " has been placed!  Your total is " + "can't figure out how to calculate" + ".");
+                var chosenItem = "SELECT stock_quantity, product_name, price FROM products WHERE id = ?;";
+                connection.query(chosenItem, [answer.productChoice], function (err, products) {
+                    if (err) throw err;
+                    console.log(products[0]);
+                    if (answer.quantity <= products[0].stock_quantity) {
+                        var updatedQty = products[0].stock_quantity - answer.quantity;
+                        var updateInventory = "UPDATE products SET stock_quantity = ? WHERE id = ?";
+                        connection.query(updateInventory, [updatedQty, answer.productChoice], function (err, res) {
+                            if (err) throw err;
+                            console.log("Your order for " + products[0].product_name + " has been placed!  Your total is " + "can't figure out how to calculate" + ".");
                         })
 
                     } else {

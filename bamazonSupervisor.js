@@ -88,28 +88,25 @@ function addNewDept() {
         ])
         .then(function (answer) {
             // var addDept = "INSERT INTO departments SET?", {
-            //     product_name: answer.product,
-            //     department_name: answer.department,
-            //     price: answer.price, 
-            //     quantity: answer.stock_quantity
+            //     department_name: answer.dept_name,
+            //     oh_cost: answer.oh_cost,
             // }
             // connection.query(addProduct, function(err) {
             //     if (err) throw err;
-            //     console.log("You added additional product successfully!");
+            //     console.log("You added a new department successfully!");
             //     menu();
-            //   }
+            // }
             // );
 
             connection.query(
                 "INSERT INTO departments SET ?",
                 {
-                    department_name: answer.department,
-                    price: answer.price,
-                    stock_quantity: answer.quantity
+                    department_name: answer.dept_name,
+                    oh_cost: answer.oh_cost,
                 },
                 function (err) {
                     if (err) throw err;
-                    console.log("You added additional product successfully!");
+                    console.log("You added a new department successfully!");
                     menu();
                 }
             )

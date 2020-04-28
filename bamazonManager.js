@@ -169,7 +169,7 @@ function addNewProduct() {
             },
             {
                 name: "price",
-                type: "input",
+                type: "number",
                 message: "What is the price of the product?",
                 validate: function (value) {
                     if (isNaN(value) === false) {
