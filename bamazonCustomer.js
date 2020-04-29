@@ -14,17 +14,33 @@ connection.connect(function (err) {
     start();
 });
 
+
+function menu() {
+    inquirer
+        .prompt({
+            name: "menu",
+            type: "list",
+            choices: ["All Products", "Buy More Products"]
+        })
+        .then(function (answer) {
+            if (answer.menu === "Buy More Products") {
+                start();
+            }
+            else {
+                connection.end();
+            }
+        });
+}
+
 function start() {
     connection.query("SELECT * FROM products", function (err, res) {
         if (err) throw err;
 
         function display() {
-            for (var i = 0; 
+            for (var i = 0;
                 i < res.length; i++) {
-                    var formattedPrice = res[i].price.toString();
-                    // console.log(typeof res[i].price);
-                    // console.log("formatted price: " + formattedPrice);
-                    formattedPrice = formattedPrice.slice(0, formattedPrice.length - 2) + "." + formattedPrice.slice(formattedPrice.length - 2);
+                var formattedPrice = res[i].price.toString();
+                formattedPrice = formattedPrice.slice(0, formattedPrice.length - 2) + "." + formattedPrice.slice(formattedPrice.length - 2);
                 console.log("Product ID: " + res[i].id + " | " + "Name: " + res[i].product_name + " | " + "Price: $" + formattedPrice + " | " + "IN STOCK: " + res[i].stock_quantity);
             }
         }
@@ -45,23 +61,23 @@ function start() {
                 }
             ])
             .then(function (answer) {
-                console.log(answer);
                 var chosenItem = "SELECT stock_quantity, product_name, price FROM products WHERE id = ?;";
                 connection.query(chosenItem, [answer.productChoice], function (err, products) {
                     if (err) throw err;
-                    console.log(products[0]);
                     if (answer.quantity <= products[0].stock_quantity) {
                         var updatedQty = products[0].stock_quantity - answer.quantity;
                         var updateInventory = "UPDATE products SET stock_quantity = ? WHERE id = ?";
                         connection.query(updateInventory, [updatedQty, answer.productChoice], function (err, res) {
                             if (err) throw err;
-                            console.log("Your order for " + products[0].product_name + " has been placed!  Your total is " + "can't figure out how to calculate" + ".");
+                            console.log("Your order for " + answer.quantity + " " + products[0].product_name + " has been placed!");
+                            menu();
                         })
 
                     } else {
                         console.log("Insufficient quantity!");
+                        menu();
                     }
-                    start();
+
                 })
             })
 

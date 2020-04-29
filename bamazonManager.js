@@ -44,13 +44,15 @@ function menu() {
 
 
 function allProducts() {
-    var allProducts = "SELECT * FROM products";
-    connection.query(allProducts, function (err, res) {
+    connection.query("SELECT * FROM products", function (err, res) {
         if (err) throw err;
 
         function display() {
-            for (var i = 0; i < res.length; i++) {
-                console.log("Product ID: " + res[i].id + " | " + "Name: " + res[i].product_name + " | " + "Price: $" + res[i].price + " | " + "IN STOCK: " + res[i].stock_quantity);
+            for (var i = 0;
+                i < res.length; i++) {
+                var formattedPrice = res[i].price.toString();
+                formattedPrice = formattedPrice.slice(0, formattedPrice.length - 2) + "." + formattedPrice.slice(formattedPrice.length - 2);
+                console.log("Product ID: " + res[i].id + " | " + "Name: " + res[i].product_name + " | " + "Price: $" + formattedPrice + " | " + "IN STOCK: " + res[i].stock_quantity);
             }
         }
 
@@ -74,8 +76,7 @@ function allProducts() {
 };
 
 function lowInventory() {
-    var lowInventory = "SELECT * FROM products where stock_quantity < 5";
-    connection.query(lowInventory, function (err, res) {
+    connection.query("SELECT * FROM products where stock_quantity < 5", function (err, res) {
         if (err) throw err;
 
         function display() {
@@ -106,13 +107,15 @@ function lowInventory() {
 
 function addProduct() {
     connection.query("SELECT * FROM products", function (err, res) {
-        if (err) throw err;
-
         function display() {
-            for (var i = 0; i < res.length; i++) {
-                console.log("Product ID: " + res[i].id + " | " + "Name: " + res[i].product_name + " | " + "Price: $" + res[i].price + " | " + "IN STOCK: " + res[i].stock_quantity);
+            for (var i = 0;
+                i < res.length; i++) {
+                var formattedPrice = res[i].price.toString();
+                formattedPrice = formattedPrice.slice(0, formattedPrice.length - 2) + "." + formattedPrice.slice(formattedPrice.length - 2);
+                console.log("Product ID: " + res[i].id + " | " + "Name: " + res[i].product_name + " | " + "Price: $" + formattedPrice + " | " + "IN STOCK: " + res[i].stock_quantity);
             }
         }
+
         display();
 
         inquirer
@@ -191,25 +194,12 @@ function addNewProduct() {
             }
         ])
         .then(function (answer) {
-            // var addProduct = "INSERT INTO products SET?", {
-            //     product_name: answer.product,
-            //     department_name: answer.department,
-            //     price: answer.price, 
-            //     quantity: answer.stock_quantity
-            // }
-            // connection.query(addProduct, function(err) {
-            //     if (err) throw err;
-            //     console.log("You added additional product successfully!");
-            //     menu();
-            //   }
-            // );
-
             connection.query(
                 "INSERT INTO products SET ?",
                 {
                     product_name: answer.product,
                     department_name: answer.department,
-                    price: answer.price,
+                    price: answer.price * 100,
                     stock_quantity: answer.quantity
                 },
                 function (err) {
