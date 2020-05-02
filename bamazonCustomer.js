@@ -20,22 +20,27 @@ function menu() {
         .prompt({
             name: "menu",
             type: "list",
-            choices: ["All Products", "Buy More Products"]
+            choices: ["All Products", "Buy More Products", "Quit"]
         })
         .then(function (answer) {
             if (answer.menu === "Buy More Products") {
                 start();
             }
-            else {
+            if (answer.menu === "All Products"){    
+                start();    
+            }
+            if (answer.menu === "Quit"){
                 connection.end();
             }
         });
 }
 
+
 function start() {
     connection.query("SELECT * FROM products", function (err, res) {
         if (err) throw err;
-
+        display();
+        
         function display() {
             for (var i = 0;
                 i < res.length; i++) {
@@ -44,8 +49,6 @@ function start() {
                 console.log("Product ID: " + res[i].id + " | " + "Name: " + res[i].product_name + " | " + "Price: $" + formattedPrice + " | " + "IN STOCK: " + res[i].stock_quantity);
             }
         }
-
-        display();
 
         inquirer
             .prompt([

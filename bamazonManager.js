@@ -20,7 +20,7 @@ function menu() {
         .prompt({
             name: "menu",
             type: "list",
-            choices: ["All Products", "Low Inventory", "Add Product", "Add New Product"]
+            choices: ["All Products", "Low Inventory", "Add More Product", "Add New Product"]
         })
         .then(function (answer) {
             if (answer.menu === "All Products") {
@@ -29,8 +29,8 @@ function menu() {
             else if (answer.menu === "Low Inventory") {
                 lowInventory();
             }
-            else if (answer.menu === "Add Product") {
-                addProduct();
+            else if (answer.menu === "Add More Product") {
+                addMoreProduct();
             }
             else if (answer.menu === "Add New Product") {
                 addNewProduct();
@@ -105,8 +105,10 @@ function lowInventory() {
 }
 
 
-function addProduct() {
+function addMoreProduct() {
     connection.query("SELECT * FROM products", function (err, res) {
+        if (err) throw err;
+
         function display() {
             for (var i = 0;
                 i < res.length; i++) {
@@ -132,24 +134,51 @@ function addProduct() {
                 }
             ])
             .then(function (answer) {
-                console.log(answer);
-                var chosenItem = "SELECT stock_quantity FROM products WHERE id = ?;";
-                connection.query(chosenItem, [answer.stock_quantity], function (err, res) {
-                    if (err) throw error;
-
-                    console.log(answer.stock_quantity);
-
-                    if (answer.quantity <= chosenItem.stock_quantity) {
-                        var updateInventory = "UPDATE products SET stock_quantity = stock_quantity - ? WHERE id = ?";
-                        connection.query(updateInventory, [chosenItem.stock_quantity], function (err, res) {
-                            if (err) throw error;
-                            console.log("You've increased inventory for " + chosenItem.product_name + ".");
-                        })
-
+                connection.query(
+                    "INSERT INTO products SET ?",
+                    {
+                        stock_quantity: stock_quantity =+ answer.quantity
+                    },
+                    function (err){
+                        if (err) throw err;
+                        console.log("You added additional product successfully!")
                     }
-                    menu();
-
+                )
+                inquirer
+                .prompt({
+                    type: "list",
+                    name: "menuReturn",
+                    message: "[Return] to main menu?",
+                    choices: ["Return", "Quit"]
                 })
+                .then(function (answer) {
+                    if (answer.menuReturn === "Return") {
+                        menu();
+                    } else {
+                        connection.end();
+                    }
+                })
+            
+
+
+                // console.log(answer);
+                // var chosenItem = "SELECT stock_quantity FROM products WHERE id = ?;";
+                // connection.query(chosenItem, [answer.stock_quantity], function (err, res) {
+                //     if (err) throw error;
+
+                //     console.log(answer.stock_quantity);
+
+                //     else (answer.quantity <= chosenItem.stock_quantity) {
+                //         var updateInventory = "UPDATE products SET stock_quantity = stock_quantity - ? WHERE id = ?";
+                //         connection.query(updateInventory, [chosenItem.stock_quantity], function (err, res) {
+                //             if (err) throw error;
+                //             console.log("You've increased inventory for " + chosenItem.product_name + ".");
+                //         })
+
+                //     }
+                //     menu();
+
+                // })
 
             })
 
@@ -205,9 +234,11 @@ function addNewProduct() {
                 function (err) {
                     if (err) throw err;
                     console.log("You added additional product successfully!");
-                    menu();
                 }
             )
+            console.log("-----------------------------------------");
+            menu();
         });
+        
 }
 
