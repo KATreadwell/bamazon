@@ -135,25 +135,29 @@ function addMoreProduct() {
             ])
             .then(function (answer) {
                 console.log(answer);
-                var chosenItem = "SELECT stock_quantity FROM products WHERE id = ?;";
+                var chosenItem = "SELECT stock_quantity, product_name FROM products WHERE id = ?;";
                 connection.query(chosenItem, [answer.stock_quantity], function (err, res) {
                     if (err) throw error;
                     // "INSERT INTO products WHERE answer.id SET ?",
                     //             {
                     //                 stock_quantity: stock_quantity = + answer.quantity,
                     //             },
-                   "UPDATE products SET stock_quantity = stock_quantity =+ answer.quantity ? WHERE id = ?",
+                //    "UPDATE products SET stock_quantity = stock_quantity =+ answer.quantity WHERE id = ?",
+                   "UPDATE products SET stock_quantity = answer.quantity ? WHERE id = ?",
                         {
-                        stock_quantity: stock_quantity = + answer.quantity,
+                        stock_quantity: stock_quantity =+ answer.quantity,
                         },
                         // connection.query(updateInventory, [chosenItem.stock_quantity], function (err, res) {
                         //     if (err) throw error;
-                            console.log("You've increased inventory for " + chosenItem.product_name + ".");
+                        
+                        console.log("-----------------------------------------");
+                        console.log("You've increased inventory for " + chosenItem.product_name + ".");
+                        console.log("-----------------------------------------");
+
+                        menu();
                         })
-                    menu();
-
                 })
-
+                
             })
 
 
