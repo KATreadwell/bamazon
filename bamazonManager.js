@@ -136,16 +136,16 @@ function addMoreProduct() {
             .then(function (answer) {
                 connection.query("UPDATE products SET stock_quantity = stock_quantity + ? WHERE id = ?", [answer.quantity, answer.productChoice], function (err, res) {
                     if (err) throw err;
-        
-                        console.log("-----------------------------------------");
-                        console.log("You've increased inventory for " + "Product ID: " + answer.productChoice + ".");
-                        console.log("-----------------------------------------");
 
-                        menu();
-                        })
+                    console.log("-----------------------------------------");
+                    console.log("You've increased inventory for " + "Product ID: " + answer.productChoice + ".");
+                    console.log("-----------------------------------------");
+
+                    menu();
                 })
-                
             })
+
+    })
 }
 
 
