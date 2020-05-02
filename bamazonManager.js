@@ -134,56 +134,50 @@ function addMoreProduct() {
                 }
             ])
             .then(function (answer) {
-                connection.query(
-                    "INSERT INTO products SET ?",
-                    {
-                        stock_quantity: stock_quantity =+ answer.quantity
-                    },
-                    function (err){
-                        if (err) throw err;
-                        console.log("You added additional product successfully!")
-                    }
-                )
-                inquirer
-                .prompt({
-                    type: "list",
-                    name: "menuReturn",
-                    message: "[Return] to main menu?",
-                    choices: ["Return", "Quit"]
+                console.log(answer);
+                var chosenItem = "SELECT stock_quantity FROM products WHERE id = ?;";
+                connection.query(chosenItem, [answer.stock_quantity], function (err, res) {
+                    if (err) throw error;
+                    // "INSERT INTO products WHERE answer.id SET ?",
+                    //             {
+                    //                 stock_quantity: stock_quantity = + answer.quantity,
+                    //             },
+                   "UPDATE products SET stock_quantity = stock_quantity =+ answer.quantity ? WHERE id = ?",
+                        {
+                        stock_quantity: stock_quantity = + answer.quantity,
+                        },
+                        // connection.query(updateInventory, [chosenItem.stock_quantity], function (err, res) {
+                        //     if (err) throw error;
+                            console.log("You've increased inventory for " + chosenItem.product_name + ".");
+                        })
+                    menu();
+
                 })
-                .then(function (answer) {
-                    if (answer.menuReturn === "Return") {
-                        menu();
-                    } else {
-                        connection.end();
-                    }
-                })
-            
-
-
-                // console.log(answer);
-                // var chosenItem = "SELECT stock_quantity FROM products WHERE id = ?;";
-                // connection.query(chosenItem, [answer.stock_quantity], function (err, res) {
-                //     if (err) throw error;
-
-                //     console.log(answer.stock_quantity);
-
-                //     else (answer.quantity <= chosenItem.stock_quantity) {
-                //         var updateInventory = "UPDATE products SET stock_quantity = stock_quantity - ? WHERE id = ?";
-                //         connection.query(updateInventory, [chosenItem.stock_quantity], function (err, res) {
-                //             if (err) throw error;
-                //             console.log("You've increased inventory for " + chosenItem.product_name + ".");
-                //         })
-
-                //     }
-                //     menu();
-
-                // })
 
             })
 
-    })
-};
+
+
+        //     .then(function (answer) {
+        //         var chosenItem = "SELECT stock_quantity FROM products WHERE id = ?;";
+        //         connection.query(chosenItem, [answer.quantity], function (res, err){
+        //             "INSERT INTO products WHERE answer.id SET ?",
+        //             {
+        //                 stock_quantity: stock_quantity = + answer.quantity,
+        //             },
+        //             function (err) {
+        //                 if (err) throw err;
+        //                 console.log("-----------------------------------------");
+        //                 console.log("You added additional quantity successfully!");
+        //                 console.log("-----------------------------------------");
+        //                 menu(); 
+        //             }
+        //         }
+        //         ) 
+        //    })
+
+    // })
+}
 
 
 function addNewProduct() {
@@ -233,12 +227,14 @@ function addNewProduct() {
                 },
                 function (err) {
                     if (err) throw err;
-                    console.log("You added additional product successfully!");
+
                 }
             )
             console.log("-----------------------------------------");
+            console.log("You added " + answer.product + " successfully!");
+            console.log("-----------------------------------------");
             menu();
         });
-        
+
 }
 
