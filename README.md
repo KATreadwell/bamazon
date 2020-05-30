@@ -4,3 +4,4 @@ As a bamazonCustomer, we want you to have access to the highest quality goods wi
 
 As a bamazonManager, use this interface to manage your store!  View all products, view low inventory, add additional products, add net new products which shall delight your customers- the power is in your hands!
 
+Demo: https://share.vidyard.com/watch/ywGTPru9wY9uatjJ5YQ9XS?
